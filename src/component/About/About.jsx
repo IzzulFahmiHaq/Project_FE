@@ -1,61 +1,79 @@
 import React from 'react';
-import { FaUser } from 'react-icons/fa';
-import { useNavigate } from 'react-router-dom';
-import BgPolygon from "../../assets/png/polygon.png";
-import Vector from "../../assets/png/Vector.png";
+import bahanImg from "../../assets/bahann.jpg";
+import rasaImg from "../../assets/kuerasa.jpg";
+import pengirimanImg from "../../assets/pengiriman.jpg";
 
-const BgStyle = {
-  backgroundImage: `url(${BgPolygon})`,
-  backgroundRepeat: "no-repeat",
-  backgroundPosition: "center",
-  backgroundSize: "cover",
-  width: "100%",
-  height: "100%",
-  position: "relative",
-};
+
+
 
 const About = () => {
-  const navigate = useNavigate();
-
-  const handleAccountClick = () => {
-    navigate("/my-account");
-  };
-
   return (
-    <div style={BgStyle} className="py-14">
-      <div className="container min-h-[580px] relative z-10">
-        <h1 className="pt-20 tracking-wider text-4xl font-semibold text-white text-center">
-          About Us
+    <main className="bg-gradient-to-b from-gray-100 to-gray-300 py-16">
+      <div className="container mx-auto text-center">
+        <h1 className="text-6xl font-serif font-bold text-orange-700 mb-6">
+          Tentang Sweet Bakes Bakery
         </h1>
-        <div
-          data-aos="fade-up"
-          data-aos-delay="300"
-          className="bg-white/80 p-10 my-10"
-        >
-          Kami menyediakan produk makanan yang sehat dan lezat, Semua makanan disini telah terverifikasi sehat dan bersih. Bila tidak bisa makan di tempat kami, kalian masih bisa untuk mencicipi makanan dengan cara pesan online. Makanan Anda akan siap hanya dengan menunggu di rumah. Jangan lupa makan di tempat kami,dan beri rating bintang lima yah😊   
-          <br />
-          Jam operasional: Setiap hari: pukul 09.00 – 16.00 WIB
-          <div
-            data-aos="fade-up"
-            data-aos-delay="300"
-            className="pt-10 flex justify-center"
-          >
-            <button
-              onClick={handleAccountClick}
-              className="flex justify-center items-center gap-2 bg-primary text-xl h-[40px] text-white px-5 py-2 hover:scale-105 duration-300"
-            >
-              <FaUser />
-              My Account
-            </button>
+        <p className="text-lg text-gray-600 max-w-3xl mx-auto mb-8">
+          Kami adalah Sweet Bakes Bakery, toko roti online yang menghadirkan berbagai pilihan kue dan pastry yang dipanggang dengan bahan berkualitas tinggi dan penuh cinta. Setiap produk kami diciptakan untuk memberikan rasa yang lezat dan pengalaman manis yang tak terlupakan.
+        </p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 py-8">
+          {/* Kualitas Bahan Terbaik */}
+          <div className="bg-white shadow-xl rounded-xl overflow-hidden hover:scale-105 transform transition-all duration-300">
+            <img
+              src={bahanImg}
+              alt="Kualitas Bahan Terbaik"
+              className="w-full h-64 object-cover rounded-t-xl"
+            />
+            <div className="p-6">
+              <h3 className="text-xl font-serif font-semibold text-gray-800">
+                Kualitas Bahan Terbaik
+              </h3>
+              <p className="text-sm text-gray-500 mt-4">
+                Kami hanya menggunakan bahan-bahan premium dalam setiap pembuatan kue, memastikan rasa yang sempurna dan kualitas yang terbaik pada setiap gigitan.
+              </p>
+            </div>
+          </div>
+
+          {/* Beragam Varian Rasa */}
+          <div className="bg-white shadow-xl rounded-xl overflow-hidden hover:scale-105 transform transition-all duration-300">
+            <img
+              src={rasaImg}
+              alt="Beragam Varian Rasa"
+              className="w-full h-64 object-cover rounded-t-xl"
+            />
+            <div className="p-6">
+              <h3 className="text-xl font-serif font-semibold text-gray-800">
+                Beragam Varian Rasa
+              </h3>
+              <p className="text-sm text-gray-500 mt-4">
+                Dari rasa klasik hingga inovatif, kami menawarkan berbagai varian rasa yang memanjakan selera dan cocok untuk semua orang.
+              </p>
+            </div>
+          </div>
+
+          {/* Pengiriman Cepat */}
+          <div className="bg-white shadow-xl rounded-xl overflow-hidden hover:scale-105 transform transition-all duration-300">
+            <img
+              src={pengirimanImg}
+              alt="Pengiriman Cepat"
+              className="w-full h-64 object-cover rounded-t-xl"
+            />
+            <div className="p-6">
+              <h3 className="text-xl font-serif font-semibold text-gray-800">
+                Pengiriman Cepat
+              </h3>
+              <p className="text-sm text-gray-500 mt-4">
+                Kami memastikan kue-kue kami sampai ke tangan Anda dengan cepat dan aman, langsung ke rumah Anda tanpa rasa khawatir.
+              </p>
+            </div>
           </div>
         </div>
+        <p className="text-lg text-gray-600 max-w-3xl mx-auto">
+          Sweet Bakes Bakery berkomitmen untuk memberikan layanan terbaik dan menciptakan pengalaman manis yang luar biasa. Jangan ragu untuk menghubungi kami jika Anda memiliki permintaan khusus atau membutuhkan bantuan. Kami selalu siap memberikan yang terbaik untuk Anda!
+        </p>
       </div>
-      <div className="absolute top-10 right-0 w-full">
-        <img src={Vector} alt="" className="absolute top-0 right-0 w-full" />
-      </div>
-    </div>
+    </main>
   );
 };
 
 export default About;
-  

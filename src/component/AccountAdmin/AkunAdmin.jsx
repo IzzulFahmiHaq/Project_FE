@@ -1,45 +1,41 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import Swal from "sweetalert2";
 
-const AdminLogin = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+const LoginAdmin = () => {
+  const [formData, setFormData] = useState({ username: "", password: "" });
   const navigate = useNavigate();
 
-  const handleLogin = async (e) => {
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleLogin = (e) => {
     e.preventDefault();
 
-    try {
-      const response = await axios.post("http://localhost:8080/api/login", {
-        email,
-        password,
+    const { username, password } = formData;
+
+    const users = JSON.parse(localStorage.getItem("users")) || [];
+    const user = users.find(
+      (user) => user.username === username && user.password === password
+    );
+
+    if (user) {
+      localStorage.setItem("adminData", JSON.stringify(user));
+      Swal.fire({
+        icon: "success",
+        title: "Login berhasil!",
+        text: "Anda akan diarahkan ke Dashboard.",
+        timer: 1500,
       });
-
-      if (response.status === 200) {
-        const { token, data } = response.data;
-
-        // Simpan token ke localStorage
-        localStorage.setItem("authToken", token);
-        localStorage.setItem("adminData", JSON.stringify(data));
-
-        Swal.fire({
-          icon: "success",
-          title: "Login berhasil!",
-          text: "Anda akan diarahkan ke Dashboard.",
-        });
-
-        navigate("/dashboard");
-      }
-    } catch (error) {
-      const errorMsg =
-        error.response?.data?.message || "Gagal login. Email atau password salah.";
-
+      navigate("/dashboard");
+    } else {
       Swal.fire({
         icon: "error",
-        title: "Login Gagal",
-        text: errorMsg,
+        title: "Login gagal!",
+        text: "Username atau password salah.",
+        timer: 1500,
       });
     }
   };
@@ -50,15 +46,16 @@ const AdminLogin = () => {
         <h2 className="text-2xl font-bold mb-4 text-center text-white">Login Admin</h2>
         <form onSubmit={handleLogin}>
           <div className="mb-4">
-            <label htmlFor="email" className="block text-sm font-medium text-gray-300">
-              Email
+            <label htmlFor="username" className="block text-sm font-medium text-gray-300">
+              Username
             </label>
             <input
-              type="email"
-              id="email"
+              type="text"
+              id="username"
+              name="username"
               className="w-full p-2 border border-gray-600 rounded-md bg-gray-700 text-white"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              value={formData.username}
+              onChange={handleChange}
               required
             />
           </div>
@@ -69,13 +66,13 @@ const AdminLogin = () => {
             <input
               type="password"
               id="password"
+              name="password"
               className="w-full p-2 border border-gray-600 rounded-md bg-gray-700 text-white"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              value={formData.password}
+              onChange={handleChange}
               required
             />
           </div>
-
           <button
             type="submit"
             className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700"
@@ -97,4 +94,4 @@ const AdminLogin = () => {
   );
 };
 
-export default AdminLogin;
+export default LoginAdmin;

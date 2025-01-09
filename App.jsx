@@ -15,6 +15,7 @@ import AddDashboard from "./src/component/DashboardAdmin/AddDashboard.jsx";
 import EditDessert from "./src/component/EditDessert/EditDessert.jsx";
 import Register from "./src/component/Register/Register.jsx";
 import EditDashboard from "./src/component/DashboardAdmin/EditDashboard.jsx";
+// import Login from "./src/component/Register/Login.jsx";
 
 import PrivateRoute from "./src/PrivateRoute/PrivateRoute"; // Import PrivateRoute
 import AOS from "aos";
@@ -124,13 +125,20 @@ const App = () => {
               </>
             }
           />
+          {/* <Route
+            path="/login"
+            element={
+              <>
+                <PrivateRoute element={<Login />} />
+              </>
+            }
+          /> */}
 
           {/* Halaman dengan AdminNavbar khusus */}
           <Route
             path="/dashboard"
             element={
               <>
-                <AdminNavbar />
                 <PrivateRoute element={<DashboardAdmin />} />
               </>
             }
@@ -139,7 +147,6 @@ const App = () => {
             path="/AddDashboard"
             element={
               <>
-                <AdminNavbar />
                 <PrivateRoute element={<AddDashboard />} />
               </>
             }
@@ -148,7 +155,6 @@ const App = () => {
             path="/EditDashboard/:id"
             element={
               <>
-                <AdminNavbar />
                 <PrivateRoute element={<EditDashboard />} />
               </>
             }
@@ -158,7 +164,6 @@ const App = () => {
             path="/edit-dessert/:id"
             element={
               <>
-                <AdminNavbar />
                 <PrivateRoute element={<EditDessert />} />
               </>
             }

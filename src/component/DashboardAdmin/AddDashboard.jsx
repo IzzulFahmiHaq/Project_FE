@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { API_TOKO } from '../utils/BaseUrl';
 
 const AddDashboard = () => {
   const navigate = useNavigate();
-  const [name, setName] = useState('');
+  const [namaMakanan, setName] = useState('');
   const [price, setPrice] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -12,7 +13,7 @@ const AddDashboard = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!name || !price) {
+    if (!namaMakanan || !price) {
       setError('Nama dan harga kue harus diisi!');
       return;
     }
@@ -30,12 +31,12 @@ const AddDashboard = () => {
 
       // Payload yang dikirim ke Backend
       const newDessert = {
-        namaMakanan: name,
+        namaMakanan: namaMakanan,
         harga: parseFloat(price),
       };
 
       const response = await axios.post(
-        `http://localhost:8080/api/admin/toko/tambah/${idAdmin}`,
+        `${API_TOKO}/admin/toko/tambah/${idAdmin}`,
         newDessert
       );
 
@@ -71,7 +72,7 @@ const AddDashboard = () => {
               type="text"
               id="name"
               className="w-full p-3 bg-gray-700 border border-gray-600 rounded-md text-gray-100"
-              value={name}
+              value={namaMakanan}
               onChange={(e) => setName(e.target.value)}
             />
           </div>

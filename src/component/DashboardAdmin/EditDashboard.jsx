@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
+import { API_TOKO } from '../utils/BaseUrl';
 
 const EditDashboard = () => {
   const { id } = useParams(); // Ambil ID dari URL
@@ -14,7 +15,7 @@ const EditDashboard = () => {
   useEffect(() => {
     const fetchDessertData = async () => {
       try {
-        const response = await axios.get(`http://localhost:8080/api/admin/toko/getById/${id}`);
+        const response = await axios.get(`${API_TOKO}/admin/toko/getById/${id}`);
         setNamaMakanan(response.data.namaMakanan);
         setHarga(response.data.harga);
       } catch (err) {
@@ -43,7 +44,7 @@ const EditDashboard = () => {
         harga: parseFloat(harga),
       };
 
-      await axios.put(`http://localhost:8080/api/admin/toko/editById/${id}?idAdmin=${idAdmin}`, updatedDessert);
+      await axios.put(`${API_TOKO}/admin/toko/editByAdmin/${id}?idAdmin=${idAdmin}`, updatedDessert);
 
       navigate('/dashboard'); // Redirect ke dashboard setelah edit berhasil
     } catch (err) {

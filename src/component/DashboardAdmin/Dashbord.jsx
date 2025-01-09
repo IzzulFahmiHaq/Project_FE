@@ -2,11 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import AdminNavbar from '../Navbarkhusus';
+import { API_TOKO } from '../utils/BaseUrl';
 
 const AdminDashboard = () => {
-  const adminData = JSON.parse(localStorage.getItem('adminData'));
-  const idAdmin = adminData ? adminData.id : null;
-  const navigate = useNavigate(); // Initialize navigate
+  const adminData = JSON.parse(localStorage.getItem('adminData')) || {};
+  const idAdmin = adminData.id || null;
+  const navigate = useNavigate();
 
   const [dessertData, setDessertData] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -24,11 +25,11 @@ const AdminDashboard = () => {
 
       try {
         setLoading(true);
-        const response = await axios.get(`http://localhost:8080/api/admin/toko/getAllByAdmin/${idAdmin}`);
+        const response = await axios.get(`${API_TOKO}/admin/toko/delete/${idAdmin}`);
         setDessertData(response.data);
-        setLoading(false);
       } catch (err) {
         setError('Gagal memuat data. Silakan coba lagi.');
+      } finally {
         setLoading(false);
       }
     };
@@ -42,18 +43,18 @@ const AdminDashboard = () => {
 
     try {
       setDeleting(true);
-      await axios.delete(`http://localhost:8080/api/admin/toko/delete/${id}`);
+      await axios.delete(`${API_TOKO}/admin/toko/delete/${id}`);
       setDessertData(dessertData.filter((item) => item.id !== id));
-      setDeleting(false);
     } catch (err) {
       setError('Gagal menghapus data. Silakan coba lagi.');
+    } finally {
       setDeleting(false);
     }
   };
 
-  // Handle edit (navigate to EditDashboard with id)
+  // Handle edit
   const handleEdit = (id) => {
-    navigate(`/EditDashboard/${id}`); // Navigate to EditDashboard with the id
+    navigate(`/EditDashboard/${id}`);
   };
 
   return (
@@ -67,7 +68,11 @@ const AdminDashboard = () => {
         {loading && <p className="text-center text-gray-400">Memuat data...</p>}
         {error && <p className="text-center text-red-500">{error}</p>}
 
-        {!loading && !error && (
+        {!loading && !error && dessertData.length === 0 && (
+          <p className="text-center text-gray-400">Data tidak ditemukan.</p>
+        )}
+
+        {!loading && !error && dessertData.length > 0 && (
           <>
             <div className="mb-6 text-center">
               <Link to="/AddDashboard">
@@ -77,7 +82,6 @@ const AdminDashboard = () => {
               </Link>
             </div>
 
-            {/* Responsive Table */}
             <div className="bg-gray-800 p-6 rounded-lg shadow-lg overflow-x-auto">
               <table className="min-w-full table-auto">
                 <thead className="bg-gray-700 text-gray-200">
@@ -91,10 +95,12 @@ const AdminDashboard = () => {
                   {dessertData.map((dessert) => (
                     <tr key={dessert.id} className="border-b border-gray-700">
                       <td className="py-3 px-4">{dessert.namaMakanan || 'N/A'}</td>
-                      <td className="py-3 px-4">Rp {(dessert.harga || 0).toLocaleString()}</td>
+                      <td className="py-3 px-4">
+                        Rp {(dessert.harga || 0).toLocaleString()}
+                      </td>
                       <td className="py-3 px-4 text-center">
                         <button
-                          onClick={() => handleEdit(dessert.id)} // Navigate to Edit page
+                          onClick={() => handleEdit(dessert.id)}
                           className="bg-yellow-600 text-white py-2 px-4 rounded-md hover:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-yellow-500"
                         >
                           Edit
