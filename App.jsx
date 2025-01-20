@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Navbar from "./src/component/Navbar.jsx";
-import AdminNavbar from "./src/component/Navbarkhusus.jsx";
 import Banner from "./src/component/banner/Banner.jsx";
 import Hero from "./src/component/hero/hero.jsx";
 import About from "./src/component/About/About.jsx";
@@ -90,15 +89,6 @@ const App = () => {
             }
           />
           <Route
-            path="/footer"
-            element={
-              <>
-                <Navbar handlePopup={handlePopup} />
-                <Footer />
-              </>
-            }
-          />
-          <Route
             path="/popup"
             element={
               <>
@@ -128,9 +118,7 @@ const App = () => {
           {/* <Route
             path="/login"
             element={
-              <>
-                <PrivateRoute element={<Login />} />
-              </>
+              <PrivateRoute element={<Login />} />
             }
           /> */}
 
@@ -170,12 +158,11 @@ const App = () => {
           />
         </Routes>
 
-        {/* Footer tetap sama untuk semua halaman */}
-        <Footer />
+        {/* Render Footer except for Home and Banner pages */}
+        {window.location.pathname !== "/" && window.location.pathname !== "/banner" && <Footer />}
 
         {/* Popup tetap bisa digunakan */}
         <Popup showPopup={showPopup} setshowPopup={setshowPopup} />
-        <button onClick={handlePopup}>Show Popup</button>
       </div>
     </BrowserRouter>
   );

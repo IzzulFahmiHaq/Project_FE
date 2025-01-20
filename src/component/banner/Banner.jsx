@@ -1,17 +1,20 @@
 import React, { useState } from 'react';
 import { FaSearch, FaStar } from 'react-icons/fa';
 
+// Import gambar produk
 import DessertOreo from "../../assets/kuee.jpg";
 import DessertBoxRedVelvet from "../../assets/mags.jpg";
 import Pudding from "../../assets/png/rotti.png";
 import Coklat from "../../assets/Cokklat.jpg";
 
 const Banner = () => {
+  // State untuk menyimpan data pencarian, produk yang dipilih, jumlah, dan metode pembayaran
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [quantity, setQuantity] = useState(1);
   const [paymentMethod, setPaymentMethod] = useState('bankTransfer');
 
+  // Daftar produk yang tersedia
   const products = [
     {
       id: 1,
@@ -47,11 +50,13 @@ const Banner = () => {
     },
   ];
 
+  // Fungsi untuk menangani input pencarian
   const handleSearch = (event) => {
     const keyword = event.target.value;
     setSearchTerm(keyword);
   };
 
+  // Fungsi untuk menampilkan bintang rating produk
   const renderStars = (rating) => (
     <div className="flex justify-center items-center gap-1 mt-2">
       {Array.from({ length: rating }, (_, index) => (
@@ -61,7 +66,7 @@ const Banner = () => {
   );
 
   return (
-    <main className="bg-black py-16">
+    <main className="bg-white py-16">
       <div className="container mx-auto text-center">
         <h1 className="text-6xl font-serif font-bold text-orange-700 mb-6">
           Sweet Bakes Bakery
@@ -70,7 +75,7 @@ const Banner = () => {
           Indulge in our freshly baked treats, from pastries to cakes, all made with love.
         </p>
 
-        {/* Search Section */}
+        {/* Bagian Pencarian */}
         <div className="flex justify-center items-center gap-6 mb-6">
           <input
             type="text"
@@ -87,11 +92,11 @@ const Banner = () => {
           </button>
         </div>
 
-        {/* Products Display */}
+        {/* Menampilkan Produk */}
         {selectedProduct ? (
           <div className="flex justify-center gap-8">
-            {/* Selected Product Modal */}
-            <div className="bg-white shadow-lg rounded-2xl p-8 max-w-lg">
+            {/* Modal untuk Produk yang Dipilih */}
+            <div className="bg-gray-100 shadow-lg rounded-2xl p-8 max-w-lg">
               <img
                 src={selectedProduct.image}
                 alt={selectedProduct.name}
@@ -107,7 +112,8 @@ const Banner = () => {
               </p>
             </div>
 
-            <div className="bg-white shadow-xl rounded-2xl p-8 max-w-sm w-full">
+            <div className="bg-gray-100 shadow-xl rounded-2xl p-8 max-w-sm w-full">
+              {/* Input Jumlah */}
               <div className="text-left mb-4">
                 <label className="block text-left text-gray-700 mb-2">Jumlah</label>
                 <input
@@ -119,6 +125,7 @@ const Banner = () => {
                 />
               </div>
 
+              {/* Pilihan Metode Pembayaran */}
               <div className="text-left mb-4">
                 <label className="block text-left text-gray-700 mb-2">Metode Pembayaran</label>
                 <select
@@ -132,6 +139,7 @@ const Banner = () => {
                 </select>
               </div>
 
+              {/* Tombol Aksi */}
               <div className="flex justify-between mt-6">
                 <button
                   onClick={() => setSelectedProduct(null)}
@@ -153,7 +161,7 @@ const Banner = () => {
               product.name.toLowerCase().includes(searchTerm.toLowerCase()))).map((product) => (
               <div
                 key={product.id}
-                className="bg-white shadow-xl rounded-xl overflow-hidden hover:scale-105 transform transition-all duration-300"
+                className="bg-gray-100 shadow-xl rounded-xl overflow-hidden hover:scale-105 transform transition-all duration-300"
               >
                 <img
                   src={product.image}

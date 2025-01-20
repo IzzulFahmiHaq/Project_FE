@@ -1,12 +1,13 @@
-import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import axios from 'axios';
-import AdminNavbar from '../Navbarkhusus';
-import { API_TOKO } from '../utils/BaseUrl';
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
+import AdminNavbar from "../Navbarkhusus";
+import { API_TOKO } from "../utils/BaseUrl"; // Pastikan API_TOKO sesuai
+import Swal from "sweetalert2";
 
 const AdminDashboard = () => {
-  const adminData = JSON.parse(localStorage.getItem('adminData')) || {};
-  const idAdmin = adminData.id || null;
+  const adminData = JSON.parse(localStorage.getItem("adminData")) || {};
+  const idAdmin = adminData.id;
   const navigate = useNavigate();
 
   const [dessertData, setDessertData] = useState([]);
@@ -18,44 +19,55 @@ const AdminDashboard = () => {
   useEffect(() => {
     const fetchDessertData = async () => {
       if (!idAdmin) {
-        setError('ID Admin tidak ditemukan. Silakan login kembali.');
-        setLoading(false);
+        Swal.fire({
+          icon: "error",
+          title: "Akses Ditolak",
+          text: "ID Admin tidak ditemukan. Silakan login kembali.",
+        });
+        navigate("/login");
         return;
       }
-
+  
       try {
-        setLoading(true);
-        const response = await axios.get(`${API_TOKO}/admin/toko/delete/${idAdmin}`);
+        const response = await axios.get(`${API_TOKO}/getAllByAdmin/${idAdmin}`);
         setDessertData(response.data);
       } catch (err) {
-        setError('Gagal memuat data. Silakan coba lagi.');
-      } finally {
-        setLoading(false);
+        Swal.fire({
+          icon: "error",
+          title: "Gagal Memuat Data",
+          text: "Silakan coba lagi nanti.",
+        });
       }
     };
-
+  
     fetchDessertData();
-  }, [idAdmin]);
-
-  // Handle delete
+  }, [idAdmin, navigate]);
+  
   const handleDelete = async (id) => {
-    if (!window.confirm('Apakah Anda yakin ingin menghapus data ini?')) return;
+    if (!window.confirm("Apakah Anda yakin ingin menghapus data ini?")) return;
 
     try {
       setDeleting(true);
-      await axios.delete(`${API_TOKO}/admin/toko/delete/${id}`);
+      await axios.delete(`${API_TOKO}/delete/${id}`);
       setDessertData(dessertData.filter((item) => item.id !== id));
     } catch (err) {
-      setError('Gagal menghapus data. Silakan coba lagi.');
+      setError("Gagal menghapus data. Silakan coba lagi.");
     } finally {
       setDeleting(false);
     }
   };
 
-  // Handle edit
   const handleEdit = (id) => {
     navigate(`/EditDashboard/${id}`);
   };
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
 
   return (
     <div className="min-h-screen bg-gray-900 text-gray-100">
@@ -64,62 +76,45 @@ const AdminDashboard = () => {
         <h1 className="text-4xl font-bold text-center text-gray-100 mb-8">
           Dashboard Admin
         </h1>
-
-        {loading && <p className="text-center text-gray-400">Memuat data...</p>}
-        {error && <p className="text-center text-red-500">{error}</p>}
-
-        {!loading && !error && dessertData.length === 0 && (
-          <p className="text-center text-gray-400">Data tidak ditemukan.</p>
-        )}
-
-        {!loading && !error && dessertData.length > 0 && (
-          <>
-            <div className="mb-6 text-center">
-              <Link to="/AddDashboard">
-                <button className="bg-blue-600 text-white py-3 px-8 rounded-md hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                  Tambah Kue Baru
-                </button>
-              </Link>
-            </div>
-
-            <div className="bg-gray-800 p-6 rounded-lg shadow-lg overflow-x-auto">
-              <table className="min-w-full table-auto">
-                <thead className="bg-gray-700 text-gray-200">
-                  <tr>
-                    <th className="py-3 px-4 text-left">Nama Kue</th>
-                    <th className="py-3 px-4 text-left">Harga</th>
-                    <th className="py-3 px-4 text-center">Aksi</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {dessertData.map((dessert) => (
-                    <tr key={dessert.id} className="border-b border-gray-700">
-                      <td className="py-3 px-4">{dessert.namaMakanan || 'N/A'}</td>
-                      <td className="py-3 px-4">
-                        Rp {(dessert.harga || 0).toLocaleString()}
-                      </td>
-                      <td className="py-3 px-4 text-center">
-                        <button
-                          onClick={() => handleEdit(dessert.id)}
-                          className="bg-yellow-600 text-white py-2 px-4 rounded-md hover:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-yellow-500"
-                        >
-                          Edit
-                        </button>
-                        <button
-                          onClick={() => handleDelete(dessert.id)}
-                          className="bg-red-600 text-white py-2 px-4 rounded-md hover:bg-red-500 focus:outline-none focus:ring-2 focus:ring-red-500 ml-2"
-                          disabled={deleting}
-                        >
-                          {deleting ? 'Menghapus...' : 'Hapus'}
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </>
-        )}
+        <div className="mb-6 text-left"> {/* Menggunakan text-left untuk memastikan tombol di kiri */}
+          <Link to="/AddDashboard">
+            <button className="bg-blue-600 text-white py-3 px-8 rounded-md hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500">
+              Tambah Kue Baru
+            </button>
+          </Link>
+        </div>
+        <div className="bg-gray-800 p-6 rounded-lg shadow-lg overflow-x-auto">
+          <table className="min-w-full table-auto">
+            <thead className="bg-gray-700 text-gray-200">
+              <tr>
+                <th className="py-3 px-4 text-left">Nama Kue</th>
+                <th className="py-3 px-4 text-center">Aksi</th>
+              </tr>
+            </thead>
+            <tbody>
+              {dessertData.map((dessert) => (
+                <tr key={dessert.id} className="border-b border-gray-700">
+                  <td className="py-3 px-4">{dessert.namaMakanan}</td>
+                  <td className="py-3 px-4 text-right"> {/* Tombol aksi berada di sebelah kanan */}
+                    <button
+                      onClick={() => handleEdit(dessert.id)}
+                      className="bg-yellow-600 text-white py-2 px-4 rounded-md hover:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-yellow-500"
+                    >
+                      Edit
+                    </button>
+                    <button
+                      onClick={() => handleDelete(dessert.id)}
+                      className="bg-red-600 text-white py-2 px-4 rounded-md hover:bg-red-500 focus:outline-none focus:ring-2 focus:ring-red-500 ml-2"
+                      disabled={deleting}
+                    >
+                      {deleting ? "Menghapus..." : "Hapus"}
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );

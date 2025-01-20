@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
+import axios from "axios";
+import { API_ADMIN } from "../utils/BaseUrl"; // Pastikan API_ADMIN sesuai
 
 const LoginAdmin = () => {
-  const [formData, setFormData] = useState({ username: "", password: "" });
+  const [formData, setFormData] = useState({ email: "", password: "" });
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -11,34 +13,40 @@ const LoginAdmin = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-
-    const { username, password } = formData;
-
-    const users = JSON.parse(localStorage.getItem("users")) || [];
-    const user = users.find(
-      (user) => user.username === username && user.password === password
-    );
-
-    if (user) {
-      localStorage.setItem("adminData", JSON.stringify(user));
-      Swal.fire({
-        icon: "success",
-        title: "Login berhasil!",
-        text: "Anda akan diarahkan ke Dashboard.",
-        timer: 1500,
-      });
-      navigate("/dashboard");
-    } else {
+  
+    const { email, password } = formData;
+  
+    try {
+      const response = await axios.post(`${API_ADMIN}/login`, { email, password });
+      if (response.data?.token && response.data?.data) {
+        const { token, data } = response.data;
+  
+        localStorage.setItem("authToken", token);
+        localStorage.setItem("adminData", JSON.stringify(data));
+  
+        Swal.fire({
+          icon: "success",
+          title: "Login berhasil!",
+          text: "Anda akan diarahkan ke Dashboard.",
+          timer: 1500,
+        });
+  
+        navigate("/dashboard");
+      } else {
+        throw new Error("Data tidak valid dari server.");
+      }
+    } catch (error) {
       Swal.fire({
         icon: "error",
         title: "Login gagal!",
-        text: "Username atau password salah.",
+        text: error.response?.data?.message || "Terjadi kesalahan. Mohon coba lagi.",
         timer: 1500,
       });
     }
   };
+  
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-800">
@@ -46,15 +54,15 @@ const LoginAdmin = () => {
         <h2 className="text-2xl font-bold mb-4 text-center text-white">Login Admin</h2>
         <form onSubmit={handleLogin}>
           <div className="mb-4">
-            <label htmlFor="username" className="block text-sm font-medium text-gray-300">
-              Username
+            <label htmlFor="email" className="block text-sm font-medium text-gray-300">
+              Email
             </label>
             <input
-              type="text"
-              id="username"
-              name="username"
+              type="email"
+              id="email"
+              name="email"
               className="w-full p-2 border border-gray-600 rounded-md bg-gray-700 text-white"
-              value={formData.username}
+              value={formData.email}
               onChange={handleChange}
               required
             />

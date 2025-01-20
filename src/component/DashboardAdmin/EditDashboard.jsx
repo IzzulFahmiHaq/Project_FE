@@ -5,52 +5,57 @@ import { API_TOKO } from '../utils/BaseUrl';
 
 const EditDashboard = () => {
   const { id } = useParams(); // Ambil ID dari URL
-  const navigate = useNavigate();
+  const navigate = useNavigate(); // Hook untuk navigasi
 
-  const [namaMakanan, setNamaMakanan] = useState('');
-  const [harga, setHarga] = useState('');
-  const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [namaMakanan, setNamaMakanan] = useState(''); // State untuk nama makanan
+  const [harga, setHarga] = useState(''); // State untuk harga
+  const [error, setError] = useState(''); // State untuk error
+  const [loading, setLoading] = useState(false); // State untuk status loading
 
+  // Mengambil data kue berdasarkan ID
   useEffect(() => {
     const fetchDessertData = async () => {
       try {
-        const response = await axios.get(`${API_TOKO}/admin/toko/getById/${id}`);
-        setNamaMakanan(response.data.namaMakanan);
-        setHarga(response.data.harga);
+        // Mengambil data kue dari API berdasarkan ID
+        const response = await axios.get(`${API_TOKO}/getById/${id}`);
+        setNamaMakanan(response.data.namaMakanan); // Mengisi state dengan nama makanan
+        setHarga(response.data.harga); // Mengisi state dengan harga
       } catch (err) {
-        setError('Gagal memuat data. Silakan coba lagi.');
+        setError('Gagal memuat data. Silakan coba lagi.'); // Menangani error jika gagal mengambil data
       }
     };
 
-    fetchDessertData();
-  }, [id]);
+    fetchDessertData(); // Panggil fungsi untuk mengambil data kue
+  }, [id]); // Hanya akan dipanggil ulang jika ID berubah
 
+  // Menangani pengiriman form untuk edit data
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    e.preventDefault(); // Mencegah reload halaman saat form disubmit
 
+    // Validasi: Pastikan semua field terisi
     if (!namaMakanan || !harga) {
       setError('Semua field harus diisi!');
       return;
     }
 
-    setLoading(true);
+    setLoading(true); // Set loading ke true sebelum mengirim request
     try {
-      const adminData = JSON.parse(localStorage.getItem('adminData'));
-      const idAdmin = adminData ? adminData.id : null;
+      const adminData = JSON.parse(localStorage.getItem('adminData')); // Ambil data admin dari localStorage
+      const idAdmin = adminData ? adminData.id : null; // Ambil ID admin
 
       const updatedDessert = {
-        namaMakanan,
-        harga: parseFloat(harga),
+        namaMakanan, // Nama kue yang diperbarui
+        harga: parseFloat(harga), // Harga yang diperbarui
       };
 
-      await axios.put(`${API_TOKO}/admin/toko/editByAdmin/${id}?idAdmin=${idAdmin}`, updatedDessert);
+      // Mengirim request PUT untuk mengupdate data kue
+      await axios.put(`${API_TOKO}/editByAdmin/${id}?idAdmin=${idAdmin}`, updatedDessert);
 
-      navigate('/dashboard'); // Redirect ke dashboard setelah edit berhasil
+      navigate('/dashboard'); // Redirect ke dashboard setelah berhasil mengedit
     } catch (err) {
-      setError('Gagal mengupdate data. Silakan coba lagi.');
+      setError('Gagal mengupdate data. Silakan coba lagi.'); // Menangani error jika gagal mengupdate data
     } finally {
-      setLoading(false);
+      setLoading(false); // Set loading ke false setelah proses selesai
     }
   };
 
@@ -59,12 +64,13 @@ const EditDashboard = () => {
       <div className="container mx-auto px-4">
         <h1 className="text-4xl font-bold text-center mb-8">Edit Data Kue</h1>
 
-        {error && <p className="text-center text-red-500 mb-4">{error}</p>}
+        {error && <p className="text-center text-red-500 mb-4">{error}</p>} {/* Menampilkan error jika ada */}
 
         <form
-          onSubmit={handleSubmit}
+          onSubmit={handleSubmit} // Mengirim form ketika disubmit
           className="max-w-xl mx-auto bg-gray-800 p-6 rounded-lg shadow-lg"
         >
+          {/* Input untuk Nama Kue */}
           <div className="mb-4">
             <label htmlFor="namaMakanan" className="block text-lg font-semibold mb-2">
               Nama Kue
@@ -74,10 +80,11 @@ const EditDashboard = () => {
               id="namaMakanan"
               className="w-full p-3 border border-gray-700 bg-gray-700 rounded-md text-white"
               value={namaMakanan}
-              onChange={(e) => setNamaMakanan(e.target.value)}
+              onChange={(e) => setNamaMakanan(e.target.value)} // Update state ketika input berubah
             />
           </div>
 
+          {/* Input untuk Harga */}
           <div className="mb-4">
             <label htmlFor="harga" className="block text-lg font-semibold mb-2">
               Harga
@@ -87,17 +94,18 @@ const EditDashboard = () => {
               id="harga"
               className="w-full p-3 border border-gray-700 bg-gray-700 rounded-md text-white"
               value={harga}
-              onChange={(e) => setHarga(e.target.value)}
+              onChange={(e) => setHarga(e.target.value)} // Update state ketika input berubah
             />
           </div>
 
+          {/* Tombol untuk submit form */}
           <div className="mb-4 text-center">
             <button
               type="submit"
               className="bg-blue-600 text-white py-3 px-6 rounded-md hover:bg-blue-500"
-              disabled={loading}
+              disabled={loading} // Disable tombol saat loading
             >
-              {loading ? 'Memproses...' : 'Simpan Perubahan'}
+              {loading ? 'Memproses...' : 'Simpan Perubahan'} {/* Ubah teks tombol saat loading */}
             </button>
           </div>
         </form>

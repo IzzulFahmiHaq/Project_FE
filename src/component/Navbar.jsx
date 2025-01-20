@@ -43,16 +43,16 @@ const Navbar = () => {
     }
   }, [darkMode]);
 
-  // Determine if the current page is 'banner'
-  const isBannerPage = location.pathname === "/banner";
+  // Check if the current page is Home or About
+  const isHomeOrAboutPage = location.pathname === "/" || location.pathname === "/about";
 
   return (
     <div
       className={`${
-        isBannerPage
+        location.pathname === "/banner"
           ? "bg-gradient-to-r from-yellow-400 to-orange-500 dark:bg-gradient-to-r dark:from-gray-800 dark:to-gray-900"
           : "bg-black"
-      } shadow-md`}
+      } shadow-md fixed w-full top-0 left-0 z-50`}
     >
       <div className="container mx-auto px-4 sm:px-6 py-4 sm:py-3">
         <div className="flex justify-between items-center">
@@ -79,12 +79,10 @@ const Navbar = () => {
           {/* Navigation Section */}
           <ul
             className={`sm:flex items-center gap-10 space-x-8 absolute sm:static left-0 top-0 sm:top-auto sm:left-auto ${
-              isBannerPage
+              location.pathname === "/banner"
                 ? "bg-gradient-to-r from-yellow-400 to-orange-500 dark:bg-gradient-to-r dark:from-gray-800 dark:to-gray-900 sm:bg-transparent"
                 : "bg-black"
-            } sm:bg-transparent w-full sm:w-auto p-6 sm:p-0 transition-all duration-300 z-10 ${
-              isMobileMenuOpen ? "block" : "hidden sm:flex"
-            }`}
+            } sm:bg-transparent w-full sm:w-auto p-6 sm:p-0 transition-all duration-300 z-10 ${isMobileMenuOpen ? "block" : "hidden sm:flex"}`}
           >
             {NavLinks.map(({ id, name, link }) => (
               <li key={id}>
@@ -99,7 +97,7 @@ const Navbar = () => {
 
             {/* Dark Mode Toggle */}
             <li className="mt-4 md:mt-0">
-              {darkMode ? (
+              {darkMode && !isHomeOrAboutPage ? (
                 <BiSolidSun
                   className="text-2xl text-white cursor-pointer hover:text-yellow-300 transition duration-300"
                   onClick={toggleDarkMode}
