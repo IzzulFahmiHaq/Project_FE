@@ -13,6 +13,7 @@ const Register = () => {
     e.preventDefault(); // Prevent page refresh on form submission
 
     try {
+      // Sending a POST request to register
       const response = await axios.post(`${API_ADMIN}/register`, {
         name,
         email,
@@ -21,10 +22,11 @@ const Register = () => {
 
       // Show success alert
       alert("Registrasi berhasil! Silakan login.");
-      navigate("/login"); // Navigate to login page after successful registration
+      navigate("/akunlogin"); // Navigate to login page after successful registration
     } catch (error) {
+      // Default error message if no custom message is received
       const errorMessage =
-        error.response?.data?.message || "Terjadi kesalahan."; // Default error message
+        error.response?.data?.message || "Terjadi kesalahan."; 
       alert(`Gagal registrasi: ${errorMessage}`);
     }
   };
@@ -94,7 +96,7 @@ const Register = () => {
           Sudah punya akun?{" "}
           <button
             className="text-blue-400 underline"
-            onClick={() => navigate("/akunlogin")}
+            onClick={() => navigate("/akunlogin")} // Navigate to login page
           >
             Login
           </button>

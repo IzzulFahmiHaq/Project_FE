@@ -2,12 +2,12 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
 const AdminNavbar = () => {
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false); // State untuk toggle mobile menu
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false); // State for mobile menu toggle
   const navigate = useNavigate(); // Initialize useNavigate hook
 
   const handleLogout = () => {
     localStorage.removeItem('adminData'); // Clear admin data from localStorage
-    navigate('/register'); // Redirect to register page using navigate
+    navigate('/register'); // Redirect to register page
   };
 
   const toggleMobileMenu = () => {
@@ -15,24 +15,28 @@ const AdminNavbar = () => {
   };
 
   return (
-    <nav className="bg-gradient-to-r from-teal-500 to-teal-600 text-white shadow-lg p-4">
+    <nav className="bg-blue-700 text-white shadow-lg p-4"> {/* Updated navbar color to match dashboard */}
       <div className="container mx-auto flex justify-between items-center">
-        <Link to="/register" className="text-2xl font-extrabold tracking-wide hover:text-gray-200 transition duration-300">
-          Admin Toko Kue
-        </Link>
+        <div className="text-2xl font-extrabold tracking-wide flex items-center gap-2">
+          <i className="fas fa-user-shield text-2xl"></i> {/* Admin icon */}
+          Admin Bakery
+        </div>
 
         {/* Desktop Menu */}
         <div className="hidden md:flex items-center gap-6">
-          <button
-            className="bg-teal-700 px-5 py-2 rounded-md hover:bg-teal-600 transition duration-300 flex items-center gap-2"
+          <Link
+            to="/register"
+            className="bg-blue-600 px-5 py-2 rounded-md hover:bg-blue-500 transition duration-300 flex items-center gap-2"
             title="Akun Admin"
           >
-            <i className="fas fa-user-circle text-xl"></i> <span className="hidden md:block">Akun Admin</span>
-          </button>
+            <i className="fas fa-user-circle text-xl"></i> {/* User icon */}
+            <span className="hidden md:block">Akun Admin</span>
+          </Link>
           <button
             onClick={handleLogout} // Handle logout with navigate
-            className="bg-red-600 px-5 py-2 rounded-md hover:bg-red-500 transition duration-300"
+            className="bg-blue-600 px-5 py-2 rounded-md hover:bg-blue-500 transition duration-300 flex items-center gap-2"
           >
+            <i className="fas fa-sign-out-alt text-xl"></i> {/* Logout icon */}
             Logout
           </button>
         </div>
@@ -46,18 +50,21 @@ const AdminNavbar = () => {
       </div>
 
       {/* Mobile Menu */}
-      <div className={`md:hidden bg-teal-500 p-4 ${isMobileMenuOpen ? 'block' : 'hidden'}`}>
+      <div className={`md:hidden bg-blue-700 p-4 ${isMobileMenuOpen ? 'block' : 'hidden'}`}> {/* Adjusted to match dashboard */}
         <div className="flex flex-col items-start gap-4">
           <Link
             to="/register"
-            className="text-white text-xl font-medium hover:text-gray-200 transition duration-300"
+            className="bg-blue-600 px-5 py-2 rounded-md hover:bg-blue-500 transition duration-300 flex items-center gap-2"
+            title="Akun Admin"
           >
-            Admin Toko Kue
+            <i className="fas fa-user-circle text-xl"></i> {/* User icon */}
+            Akun Admin
           </Link>
           <button
             onClick={handleLogout}
-            className="bg-red-600 px-5 py-2 rounded-md hover:bg-red-500 transition duration-300 w-full"
+            className="bg-blue-600 px-5 py-2 rounded-md hover:bg-blue-500 transition duration-300 w-full flex items-center gap-2"
           >
+            <i className="fas fa-sign-out-alt text-xl"></i> {/* Logout icon */}
             Logout
           </button>
         </div>

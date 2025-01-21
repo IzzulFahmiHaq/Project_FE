@@ -1,121 +1,155 @@
-import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+
+// Import gambar produk
+import DessertOreo from "../../assets/kuee.jpg";
+import DessertBoxRedVelvet from "../../assets/mags.jpg";
+import Pudding from "../../assets/png/rotti.png";
+import Coklat from "../../assets/Cokklat.jpg";
 
 const EditDessert = () => {
-  // Mengambil ID dari parameter URL
   const { id } = useParams();
   const navigate = useNavigate();
 
-  // Data kue yang sudah ditentukan sebelumnya (mock data)
-  const [dessertData, setDessertData] = useState([
-    { id: 1, name: 'Kue Pernikahan', price: 250000, sold: 150, rating: 4.5 },
-    { id: 2, name: 'Kue Ulang Tahun', price: 150000, sold: 200, rating: 4.0 },
-    { id: 3, name: 'Kue Kasih Sayang', price: 180000, sold: 120, rating: 4.7 },
-    { id: 4, name: 'Kue Romantis', price: 220000, sold: 180, rating: 4.3 },
+  // Daftar produk awal
+  const [products, setProducts] = useState([
+    {
+      id: 1,
+      name: "Chocolate Chip Cook",
+      description: "Deliciously soft and chewy cookies with chocolate chips.",
+      price: 22000,
+      image: DessertOreo,
+      rating: 4,
+    },
+    {
+      id: 2,
+      name: "Red Velvet",
+      description: "Rich and moist red velvet cake with cream cheese frosting.",
+      price: 35000,
+      image: DessertBoxRedVelvet,
+      rating: 5,
+    },
+    {
+      id: 3,
+      name: "Chocolate",
+      description: "Smooth and creamy chocolate pudding topped with whipped cream.",
+      price: 27000,
+      image: Pudding,
+      rating: 4,
+    },
+    {
+      id: 4,
+      name: "Choco cake",
+      description: "Refreshing iced lemon tea to complement your dessert.",
+      price: 7000,
+      image: Coklat,
+      rating: 3,
+    },
   ]);
 
-  // State untuk menyimpan data form (kue yang sedang diedit)
+  // State untuk form data
   const [formData, setFormData] = useState({
-    id: '',
-    name: '',
-    price: '',
-    sold: '',
-    rating: '',
+    id: "",
+    name: "",
+    description: "",
+    price: "",
+    rating: "",
   });
 
-  // Mengambil data kue berdasarkan ID dari URL dan mengisi form
+  // Mengambil produk berdasarkan ID
   useEffect(() => {
-    // Mencari kue berdasarkan ID
-    const dessert = dessertData.find(d => d.id === parseInt(id));
-    if (dessert) {
-      // Jika kue ditemukan, set formData dengan data kue tersebut
+    const product = products.find((p) => p.id === parseInt(id));
+    if (product) {
       setFormData({
-        id: dessert.id,
-        name: dessert.name,
-        price: dessert.price,
-        sold: dessert.sold,
-        rating: dessert.rating,
+        id: product.id,
+        name: product.name,
+        description: product.description,
+        price: product.price,
+        rating: product.rating,
       });
     } else {
-      // Jika kue tidak ditemukan, redirect ke halaman utama
-      navigate('/');
+      navigate("/");
     }
-  }, [id, dessertData, navigate]);
+  }, [id, products, navigate]);
 
-  // Fungsi untuk menangani perubahan input form
+  // Fungsi untuk menangani input perubahan
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
       ...prevData,
-      [name]: value, // Update nilai berdasarkan nama input
+      [name]: value,
     }));
   };
 
-  // Fungsi untuk menyimpan data yang telah diedit
+  // Fungsi untuk menyimpan perubahan
   const handleSave = () => {
-    // Simulasi penyimpanan data (misalnya API call)
-    console.log('Updated Dessert Data:', formData);
-    navigate('/');  // Setelah simpan, redirect ke halaman utama
+    const updatedProducts = products.map((product) =>
+      product.id === parseInt(id) ? { ...product, ...formData } : product
+    );
+    setProducts(updatedProducts);
+    console.log("Updated Product Data:", formData);
+    navigate("/");
   };
 
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-gray-800 py-12 flex items-center justify-center">
       <div className="bg-white dark:bg-gray-900 dark:text-white p-8 rounded-lg shadow-lg w-96">
-        <h3 className="text-2xl font-semibold text-center mb-6">Edit Dessert</h3>
+        <h3 className="text-2xl font-semibold text-center mb-6">Edit Produk</h3>
 
-        {/* Input untuk nama kue */}
+        {/* Input untuk nama produk */}
         <input
           type="text"
           name="name"
           value={formData.name}
           onChange={handleInputChange}
-          placeholder="Nama Kue"
+          placeholder="Nama Produk"
           className="w-full p-2 mb-4 border border-gray-300 rounded-lg"
         />
-        
-        {/* Input untuk harga kue */}
+
+        {/* Input untuk deskripsi produk */}
+        <textarea
+          name="description"
+          value={formData.description}
+          onChange={handleInputChange}
+          placeholder="Deskripsi Produk"
+          className="w-full p-2 mb-4 border border-gray-300 rounded-lg"
+        />
+
+        {/* Input untuk harga produk */}
         <input
           type="number"
           name="price"
           value={formData.price}
           onChange={handleInputChange}
-          placeholder="Harga"
+          placeholder="Harga Produk"
           className="w-full p-2 mb-4 border border-gray-300 rounded-lg"
         />
-        
-        {/* Input untuk jumlah kue yang terjual */}
-        <input
-          type="number"
-          name="sold"
-          value={formData.sold}
-          onChange={handleInputChange}
-          placeholder="Terjual"
-          className="w-full p-2 mb-4 border border-gray-300 rounded-lg"
-        />
-        
-        {/* Input untuk rating kue */}
+
+        {/* Input untuk rating produk */}
         <input
           type="number"
           name="rating"
           value={formData.rating}
           onChange={handleInputChange}
-          placeholder="Rating"
+          placeholder="Rating Produk"
           className="w-full p-2 mb-4 border border-gray-300 rounded-lg"
+          min="1"
+          max="5"
         />
 
-        {/* Tombol untuk menyimpan perubahan dan membatalkan */}
+        {/* Tombol Aksi */}
         <div className="flex justify-center">
           <button
             onClick={handleSave}
             className="bg-primary text-white py-2 px-6 rounded-md hover:bg-primary-dark"
           >
-            Save
+            Simpan
           </button>
           <button
-            onClick={() => navigate('/')}
+            onClick={() => navigate("/")}
             className="bg-gray-500 text-white py-2 px-6 rounded-md hover:bg-gray-400 ml-4"
           >
-            Cancel
+            Batal
           </button>
         </div>
       </div>

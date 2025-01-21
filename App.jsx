@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import Navbar from "./src/component/Navbar.jsx";
 import Banner from "./src/component/banner/Banner.jsx";
 import Hero from "./src/component/hero/hero.jsx";
@@ -14,6 +14,8 @@ import AddDashboard from "./src/component/DashboardAdmin/AddDashboard.jsx";
 import EditDessert from "./src/component/EditDessert/EditDessert.jsx";
 import Register from "./src/component/Register/Register.jsx";
 import EditDashboard from "./src/component/DashboardAdmin/EditDashboard.jsx";
+import '@fortawesome/fontawesome-free/css/all.min.css';
+
 // import Login from "./src/component/Register/Login.jsx";
 
 import PrivateRoute from "./src/PrivateRoute/PrivateRoute"; // Import PrivateRoute
@@ -22,6 +24,7 @@ import "aos/dist/aos.css";
 
 const App = () => {
   const [showPopup, setshowPopup] = useState(false);
+  const location = useLocation(); // Menggunakan useLocation untuk memeriksa rute saat ini
 
   const handlePopup = () => {
     setshowPopup(true);
@@ -38,134 +41,130 @@ const App = () => {
   }, []);
 
   return (
-    <BrowserRouter>
-      <div className="overflow-x-hidden">
-        {/* Navbar berubah sesuai halaman */}
-        <Routes>
-          {/* Halaman dengan Navbar umum */}
-          <Route
-            path="/"
-            element={
-              <>
-                <Navbar handlePopup={handlePopup} />
-                <Hero />
-              </>
-            }
-          />
-          <Route
-            path="/register"
-            element={
-              <>
-                <Navbar handlePopup={handlePopup} />
-                <Register />
-              </>
-            }
-          />
-          <Route
-            path="/banner"
-            element={
-              <>
-                <Navbar handlePopup={handlePopup} />
-                <Banner />
-              </>
-            }
-          />
-          <Route
-            path="/about"
-            element={
-              <>
-                <Navbar handlePopup={handlePopup} />
-                <About handlePopup={handlePopup} />
-              </>
-            }
-          />
-          <Route
-            path="/why-choose"
-            element={
-              <>
-                <Navbar handlePopup={handlePopup} />
-                <WhyChoose />
-              </>
-            }
-          />
-          <Route
-            path="/popup"
-            element={
-              <>
-                <Navbar handlePopup={handlePopup} />
-                <Popup />
-              </>
-            }
-          />
-          <Route
-            path="/PrimaryButton"
-            element={
-              <>
-                <Navbar handlePopup={handlePopup} />
-                <PrimaryButton />
-              </>
-            }
-          />
-          <Route
-            path="/akunlogin"
-            element={
-              <>
-                <Navbar handlePopup={handlePopup} />
-                <AccountAdmin />
-              </>
-            }
-          />
-          {/* <Route
-            path="/login"
-            element={
-              <PrivateRoute element={<Login />} />
-            }
-          /> */}
+    <div className="overflow-x-hidden">
+      {/* Navbar berubah sesuai halaman */}
+      <Routes>
+        {/* Halaman dengan Navbar umum */}
+        <Route
+          path="/"
+          element={
+            <>
+              <Navbar handlePopup={handlePopup} />
+              <Hero />
+            </>
+          }
+        />
+        <Route
+          path="/register"
+          element={
+            <>
+              <Navbar handlePopup={handlePopup} />
+              <Register />
+            </>
+          }
+        />
+        <Route
+          path="/banner"
+          element={
+            <>
+              <Navbar handlePopup={handlePopup} />
+              <Banner />
+            </>
+          }
+        />
+        <Route
+          path="/about"
+          element={
+            <>
+              <Navbar handlePopup={handlePopup} />
+              <About handlePopup={handlePopup} />
+            </>
+          }
+        />
+        <Route
+          path="/why-choose"
+          element={
+            <>
+              <Navbar handlePopup={handlePopup} />
+              <WhyChoose />
+            </>
+          }
+        />
+        <Route
+          path="/popup"
+          element={
+            <>
+              <Navbar handlePopup={handlePopup} />
+              <Popup />
+            </>
+          }
+        />
+        <Route
+          path="/PrimaryButton"
+          element={
+            <>
+              <Navbar handlePopup={handlePopup} />
+              <PrimaryButton />
+            </>
+          }
+        />
+        <Route
+          path="/akunlogin"
+          element={
+            <>
+              <Navbar handlePopup={handlePopup} />
+              <AccountAdmin />
+            </>
+          }
+        />
+        {/* Halaman dengan AdminNavbar khusus */}
+        <Route
+          path="/dashboard"
+          element={
+            <>
+              <PrivateRoute element={<DashboardAdmin />} />
+            </>
+          }
+        />
+        <Route
+          path="/AddDashboard"
+          element={
+            <>
+              <PrivateRoute element={<AddDashboard />} />
+            </>
+          }
+        />
+        <Route
+          path="/EditDashboard/:id"
+          element={
+            <>
+              <PrivateRoute element={<EditDashboard />} />
+            </>
+          }
+        />
+        <Route
+          path="/edit-dessert/:id"
+          element={
+            <>
+              <PrivateRoute element={<EditDessert />} />
+            </>
+          }
+        />
+      </Routes>
 
-          {/* Halaman dengan AdminNavbar khusus */}
-          <Route
-            path="/dashboard"
-            element={
-              <>
-                <PrivateRoute element={<DashboardAdmin />} />
-              </>
-            }
-          />
-          <Route
-            path="/AddDashboard"
-            element={
-              <>
-                <PrivateRoute element={<AddDashboard />} />
-              </>
-            }
-          />
-          <Route
-            path="/EditDashboard/:id"
-            element={
-              <>
-                <PrivateRoute element={<EditDashboard />} />
-              </>
-            }
-          />
-        
-          <Route
-            path="/edit-dessert/:id"
-            element={
-              <>
-                <PrivateRoute element={<EditDessert />} />
-              </>
-            }
-          />
-        </Routes>
+      {/* Render Footer hanya di halaman about */}
+      {location.pathname === "/about" && <Footer />}
 
-        {/* Render Footer except for Home and Banner pages */}
-        {window.location.pathname !== "/" && window.location.pathname !== "/banner" && <Footer />}
-
-        {/* Popup tetap bisa digunakan */}
-        <Popup showPopup={showPopup} setshowPopup={setshowPopup} />
-      </div>
-    </BrowserRouter>
+      {/* Popup tetap bisa digunakan */}
+      <Popup showPopup={showPopup} setshowPopup={setshowPopup} />
+    </div>
   );
 };
 
-export default App;
+const AppWrapper = () => (
+  <BrowserRouter>
+    <App />
+  </BrowserRouter>
+);
+
+export default AppWrapper;

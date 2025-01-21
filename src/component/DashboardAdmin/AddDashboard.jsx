@@ -1,27 +1,29 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { API_TOKO } from '../utils/BaseUrl'; // URL API untuk toko
+import { API_TOKO } from '../utils/BaseUrl'; // Correct API URL for your store
 
 const AddDashboard = () => {
-  const navigate = useNavigate(); // Hook untuk navigasi
-  const [namaMakanan, setName] = useState(''); // State untuk nama makanan
-  const [price, setPrice] = useState(''); // State untuk harga
-  const [error, setError] = useState(''); // State untuk pesan error
-  const [loading, setLoading] = useState(false); // State untuk status loading
+  const navigate = useNavigate(); // For navigation
+  const [namaMakanan, setName] = useState(''); // State for dessert name
+  const [price, setPrice] = useState(''); // State for price
+  const [error, setError] = useState(''); // State for error messages
+  const [loading, setLoading] = useState(false); // Loading state for submit process
+  const [image, setImage] = useState(null); // State to store the uploaded image
+  const [imageUrl, setImageUrl] = useState(''); // State to store the image URL after uploading
 
   const handleSubmit = async (e) => {
-    e.preventDefault(); // Mencegah form default action
+    e.preventDefault(); // Prevent form default behavior
 
-    // Validasi input
-    if (!namaMakanan || !price) {
-      setError('Nama dan harga kue harus diisi!');
+    // Validation
+    if (!namaMakanan || !price || isNaN(price) || parseFloat(price) <= 0) {
+      setError('Nama dan harga kue harus diisi dengan harga yang valid!');
       return;
     }
 
-    setLoading(true); // Set loading ke true ketika memulai proses pengiriman data
+    setLoading(true); // Set loading to true when submitting the form
     try {
-      const adminData = JSON.parse(localStorage.getItem('adminData')); // Mengambil data admin dari localStorage
+      const adminData = JSON.parse(localStorage.getItem('adminData')); // Retrieve admin data from localStorage
       const idAdmin = adminData ? adminData.id : null;
 
       if (!idAdmin) {
@@ -30,27 +32,49 @@ const AddDashboard = () => {
         return;
       }
 
-      // Payload yang akan dikirim ke backend
+      // Payload to send to the backend
       const newDessert = {
         namaMakanan: namaMakanan,
         harga: parseFloat(price),
+        imageUrl: imageUrl,  // Include image URL
       };
 
-      // Mengirim request POST ke API untuk menambahkan kue baru
+      // Send POST request to API
       const response = await axios.post(
         `${API_TOKO}/tambah/${idAdmin}`,
         newDessert
       );
 
-      // Jika berhasil, redirect ke halaman dashboard
+      // Redirect to the dashboard if successful
       if (response.status === 200) {
         navigate('/dashboard');
+      } else {
+        setError('Gagal menambah kue. Silakan coba lagi.');
       }
     } catch (error) {
-      // Menangani error jika request gagal
-      setError('Gagal menambah kue. Silakan coba lagi.');
+      setError('Terjadi kesalahan, gagal menambah kue. Silakan coba lagi.');
+      console.error('Error:', error); // Log error for debugging
     } finally {
-      setLoading(false); // Set loading ke false setelah proses selesai
+      setLoading(false); // Set loading to false after submission
+    }
+  };
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const formData = new FormData();
+      formData.append('file', file);
+
+      // Send the image to the backend for uploading
+      axios.post(`${API_TOKO}/uploadFoto`, formData)
+        .then((response) => {
+          setImage(file);
+          setImageUrl(response.data); // Store the image URL from the response
+        })
+        .catch((err) => {
+          setError('Gagal mengunggah gambar. Silakan coba lagi.');
+          console.error('Error:', err);
+        });
     }
   };
 
@@ -59,9 +83,8 @@ const AddDashboard = () => {
       <div className="container mx-auto px-4">
         <h1 className="text-4xl font-bold text-gray-100 text-center mb-8">Tambah Kue Baru</h1>
 
-        {error && <p className="text-center text-red-500 mb-4">{error}</p>} {/* Menampilkan pesan error jika ada */}
+        {error && <p className="text-center text-red-500 mb-4">{error}</p>} {/* Display error message if any */}
 
-        {/* Form untuk menambahkan kue */}
         <form
           onSubmit={handleSubmit}
           className="max-w-xl mx-auto bg-gray-800 p-6 rounded-lg shadow-lg"
@@ -78,7 +101,7 @@ const AddDashboard = () => {
               id="name"
               className="w-full p-3 bg-gray-700 border border-gray-600 rounded-md text-gray-100"
               value={namaMakanan}
-              onChange={(e) => setName(e.target.value)} // Mengupdate nama makanan
+              onChange={(e) => setName(e.target.value)} // Update the dessert name
             />
           </div>
 
@@ -94,7 +117,22 @@ const AddDashboard = () => {
               id="price"
               className="w-full p-3 bg-gray-700 border border-gray-600 rounded-md text-gray-100"
               value={price}
-              onChange={(e) => setPrice(e.target.value)} // Mengupdate harga
+              onChange={(e) => setPrice(e.target.value)} // Update the price
+            />
+          </div>
+
+          <div className="mb-4">
+            <label
+              htmlFor="image"
+              className="block text-lg font-semibold text-gray-100 mb-2"
+            >
+              Gambar Kue
+            </label>
+            <input
+              type="file"
+              id="image"
+              className="w-full p-3 bg-gray-700 border border-gray-600 rounded-md text-gray-100"
+              onChange={handleImageChange} // Handle image upload
             />
           </div>
 
@@ -102,9 +140,9 @@ const AddDashboard = () => {
             <button
               type="submit"
               className="bg-blue-600 text-white py-3 px-6 rounded-md hover:bg-blue-500"
-              disabled={loading} // Tombol dinonaktifkan saat loading
+              disabled={loading} // Disable the button when loading
             >
-              {loading ? 'Memuat...' : 'Tambah Kue'} {/* Teks tombol bergantung pada status loading */}
+              {loading ? 'Memuat...' : 'Tambah Kue'} {/* Display loading text if submitting */}
             </button>
           </div>
         </form>
