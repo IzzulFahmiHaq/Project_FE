@@ -8,7 +8,7 @@ import WhyChoose from "./src/component/WhyChoose/WhyChoose.jsx";
 import Footer from "./src/component/Footer/Footer.jsx";
 import Popup from "./src/component/popup/popup.jsx";
 import DashboardAdmin from "./src/component/DashboardAdmin/Dashbord.jsx";
-import PrimaryButton from "./src/component/Shared/PrimaryButton.jsx";
+import PrimaryButton from "./src/component/Shared/PrimaryButton.jsx"; // Import PrimaryButton
 import AccountAdmin from "./src/component/AccountAdmin/AkunAdmin.jsx";
 import AddDashboard from "./src/component/DashboardAdmin/AddDashboard.jsx";
 import EditDessert from "./src/component/EditDessert/EditDessert.jsx";
@@ -24,7 +24,7 @@ import "aos/dist/aos.css";
 
 const App = () => {
   const [showPopup, setshowPopup] = useState(false);
-  const location = useLocation(); // Menggunakan useLocation untuk memeriksa rute saat ini
+  const location = useLocation(); // Using useLocation to check current route
 
   const handlePopup = () => {
     setshowPopup(true);
@@ -42,9 +42,9 @@ const App = () => {
 
   return (
     <div className="overflow-x-hidden">
-      {/* Navbar berubah sesuai halaman */}
+      {/* Navbar changes depending on the page */}
       <Routes>
-        {/* Halaman dengan Navbar umum */}
+        {/* Pages with common Navbar */}
         <Route
           path="/"
           element={
@@ -101,7 +101,7 @@ const App = () => {
         />
         <Route
           path="/PrimaryButton"
-          element={
+          element={ // New route for the PrimaryButton
             <>
               <Navbar handlePopup={handlePopup} />
               <PrimaryButton />
@@ -117,7 +117,7 @@ const App = () => {
             </>
           }
         />
-        {/* Halaman dengan AdminNavbar khusus */}
+        {/* Admin Navbar pages */}
         <Route
           path="/dashboard"
           element={
@@ -152,10 +152,10 @@ const App = () => {
         />
       </Routes>
 
-      {/* Render Footer hanya di halaman about */}
+      {/* Render Footer only on the About page */}
       {location.pathname === "/about" && <Footer />}
 
-      {/* Popup tetap bisa digunakan */}
+      {/* Popup can still be used */}
       <Popup showPopup={showPopup} setshowPopup={setshowPopup} />
     </div>
   );

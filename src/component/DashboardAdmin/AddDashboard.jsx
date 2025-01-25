@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { API_TOKO } from '../utils/BaseUrl'; // Correct API URL for your store
+import Swal from 'sweetalert2';
 
 const AddDashboard = () => {
   const navigate = useNavigate(); // For navigation
@@ -11,6 +12,38 @@ const AddDashboard = () => {
   const [loading, setLoading] = useState(false); // Loading state for submit process
   const [image, setImage] = useState(null); // State to store the uploaded image
   const [imageUrl, setImageUrl] = useState(''); // State to store the image URL after uploading
+  const [previewImage, setPreviewImage] = useState(''); // Preview image for the user
+
+  const handleImageChange = async (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setImage(file); // Simpan file dalam state
+      setPreviewImage(URL.createObjectURL(file)); // Menampilkan preview gambar
+  
+      // Buat FormData untuk mengirim file ke server
+      const formData = new FormData();
+      formData.append('file', file);
+  
+      try {
+        // Mengirim file ke server S3 atau API lainnya
+        const respon = await axios.post("https://s3.lynk2.co/api/s3/test", formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
+  
+        const fotoUrl = respon.data?.data?.url_file; // Mendapatkan URL file dari response
+        if (fotoUrl) {
+          console.log("Respons S3:", respon.data);
+          setImageUrl(fotoUrl); // Menyimpan URL gambar
+        } else {
+          setError("Gagal mengunggah gambar, URL tidak ditemukan.");
+        }
+      } catch (err) {
+        setError('Gagal mengunggah gambar. Silakan coba lagi.');
+        console.error("Error uploading image:", err);
+      }
+    }
+  };
+  
 
   const handleSubmit = async (e) => {
     e.preventDefault(); // Prevent form default behavior
@@ -18,6 +51,11 @@ const AddDashboard = () => {
     // Validation
     if (!namaMakanan || !price || isNaN(price) || parseFloat(price) <= 0) {
       setError('Nama dan harga kue harus diisi dengan harga yang valid!');
+      return;
+    }
+
+    if (!imageUrl) {
+      setError('Harap unggah gambar untuk kue!');
       return;
     }
 
@@ -36,7 +74,7 @@ const AddDashboard = () => {
       const newDessert = {
         namaMakanan: namaMakanan,
         harga: parseFloat(price),
-        imageUrl: imageUrl,  // Include image URL
+        imageUrl: imageUrl, // Include image URL
       };
 
       // Send POST request to API
@@ -45,9 +83,14 @@ const AddDashboard = () => {
         newDessert
       );
 
-      // Redirect to the dashboard if successful
+      // Check response
       if (response.status === 200) {
-        navigate('/dashboard');
+        Swal.fire({
+          icon: 'success',
+          title: 'Berhasil!',
+          text: 'Kue berhasil ditambahkan.',
+        }).then(() => navigate('/dashboard'));
+
       } else {
         setError('Gagal menambah kue. Silakan coba lagi.');
       }
@@ -56,25 +99,6 @@ const AddDashboard = () => {
       console.error('Error:', error); // Log error for debugging
     } finally {
       setLoading(false); // Set loading to false after submission
-    }
-  };
-
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const formData = new FormData();
-      formData.append('file', file);
-
-      // Send the image to the backend for uploading
-      axios.post(`${API_TOKO}/uploadFoto`, formData)
-        .then((response) => {
-          setImage(file);
-          setImageUrl(response.data); // Store the image URL from the response
-        })
-        .catch((err) => {
-          setError('Gagal mengunggah gambar. Silakan coba lagi.');
-          console.error('Error:', err);
-        });
     }
   };
 
@@ -134,6 +158,15 @@ const AddDashboard = () => {
               className="w-full p-3 bg-gray-700 border border-gray-600 rounded-md text-gray-100"
               onChange={handleImageChange} // Handle image upload
             />
+            {previewImage && (
+              <div className="mt-4">
+                <img
+                  src={previewImage}
+                  alt="Preview"
+                  className="w-full h-auto rounded-md"
+                />
+              </div>
+            )}
           </div>
 
           <div className="mb-4 text-center">

@@ -1,14 +1,31 @@
-import React from "react";
+import React, { useState } from "react";
 import { FaArrowRight } from "react-icons/fa";
+import { Link } from "react-router-dom";
 
 const PrimaryButton = () => {
+  const [buttonText, setButtonText] = useState("Pilih Rencana Makanan Anda");
+
+  // Mengatur warna gradien tombol sesuai teks
+  const getButtonColor = () => {
+    if (buttonText === "Pilih Rencana Makanan Anda") {
+      return "bg-gradient-to-r from-orange-500 to-orange-600";
+    } else if (buttonText === "Jelajahi Lebih Lanjut") {
+      return "bg-gradient-to-r from-green-500 to-green-400";
+    }
+    return "bg-gradient-to-r from-gray-500 to-gray-600";
+  };
+
   return (
-    <div className="flex items-center">
-      <button className="bg-primary text-white flex items-center justify-center px-5 py-2 rounded-md group relative">
-        <span className="mr-2">Choose Your Meal Plan</span>
-        {/* Ikon Panah */}
-        <FaArrowRight className="transform group-hover:translate-x-2 transition-transform duration-200 text-white text-lg" />
-      </button>
+    <div className="flex items-center justify-center">
+      <Link to="/banner">
+        <button
+          className={`${getButtonColor()} text-white flex items-center justify-center px-6 py-3 rounded-full shadow-md hover:scale-105 transform transition duration-300 ease-out`}
+          onClick={() => setButtonText("Jelajahi Lebih Lanjut")}
+        >
+          <span className="mr-3 text-lg font-semibold">{buttonText}</span>
+          <FaArrowRight className="transform transition-transform duration-200 text-white text-xl" />
+        </button>
+      </Link>
     </div>
   );
 };
